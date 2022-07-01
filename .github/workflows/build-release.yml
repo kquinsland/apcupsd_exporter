@@ -16,11 +16,24 @@ jobs:
       matrix:
         # build and publish in parallel: linux/386, linux/amd64, linux/arm64, linux/arm, darwin/amd64, darwin/arm64
         ##
-        #  GOOS=linux GOARCH=arm
+        # GOOS=linux GOARCH=arm GOARM=5 go build
         goos: [linux, darwin]
         goarch: ["386", amd64, arm64, arm]
+        # for 32bit ARM, we have the GOARM env var that specifies which specific version of the architecture
+        # See: https://zchee.github.io/golang-wiki/GoArm/#supported-architectures
+        ##
+        include:
+          - goarch: "386"
+            goos: arm
+            goarm: 5
+          - goarch: "386"
+            goos: arm
+            goarm: 6
+          - goarch: "386"
+            goos: arm
+            goarm: 7
+        # No 32 bit intel or ARM builds for macOS platforms
         exclude:
-          # No 32 bit intel or ARM builds for macOS platforms
           - goarch: "386"
             goos: darwin
           - goarch: "arm"
@@ -33,6 +46,11 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           goversion: 1.17
+          build_flags: env GOARM=${{ matrix.goarch }}
           # Publish sha hashes, not md5
           md5sum: false
           sha256sum: true
+          # The release name needs to include the GOARM version
+          asset_name: ${BINARY_NAME}-${RELEASE_TAG}-${{ matrix.goos }}-${{ matrix.goarch }}-${{ matrix.goarm }}
+
+          #binary-name-${{ matrix.goos }}-${{ matrix.goarch }}.
