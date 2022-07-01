@@ -22,16 +22,16 @@ jobs:
         # for 32bit ARM, we have the GOARM env var that specifies which specific version of the architecture
         # See: https://zchee.github.io/golang-wiki/GoArm/#supported-architectures
         ##
-        include:
-          - goarch: "386"
-            goos: arm
-            goarm: 5
-          - goarch: "386"
-            goos: arm
-            goarm: 6
-          - goarch: "386"
-            goos: arm
-            goarm: 7
+        # include:
+        #   - goarch: "386"
+        #     goos: arm
+        #     goarm: 5
+        #   - goarch: "386"
+        #     goos: arm
+        #     goarm: 6
+        #   - goarch: "386"
+        #     goos: arm
+        #     goarm: 7
         # No 32 bit intel or ARM builds for macOS platforms
         exclude:
           - goarch: "386"
@@ -46,7 +46,8 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           goversion: 1.17
-          build_flags: env GOARM=${{ matrix.goarch }}
+          project_path: "./cmd/apcupsd_exporter"
+          #build_flags: GOARM=${{ matrix.goarch }}
           # Publish sha hashes, not md5
           md5sum: false
           sha256sum: true
